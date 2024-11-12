@@ -1,0 +1,41 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django-truco
+    volumes:
+      - ./django-truco:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - '8000:8000'
+    networks:
+      - webnet
+    profiles: ["dev", "prod"]
+
+  db:
+    image: mysql:latest
+    container_name: mysql-truco
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./configs/my.cnf:/etc/mysql/my.cnf
+    ports:
+      - '3306:3306'
+    networks:
+      - webnet
+    profiles: ["dev", "prod"]
+
+networks:
+  webnet:
+
+volumes:
+  db_data:
