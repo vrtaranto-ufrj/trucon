@@ -14,7 +14,8 @@ services:
       - '8000:8000'
     networks:
       - webnet
-    profiles: ["dev", "prod"]
+    profiles:
+      - prod
 
   db:
     image: mysql:latest
@@ -25,14 +26,13 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - db_data:/var/lib/mysql
-      - ./configs/my.cnf:/etc/mysql/my.cnf
     ports:
       - '3306:3306'
     networks:
       - webnet
-    profiles: ["dev", "prod"]
+    profiles:
+      - dev
+      - prod
 
 networks:
   webnet:
