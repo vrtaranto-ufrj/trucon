@@ -33,4 +33,4 @@ docker-compose --profile prod up --build
 docker-compose exec web python manage.py migrate
 ```
 
-### A porta padrão do projeto é a 8000, acesse `http://localhost:8000` para ver o projeto rodando.
+A porta padrão do projeto é a 8000, acesse `http://localhost:8000` para ver o projeto rodando.
