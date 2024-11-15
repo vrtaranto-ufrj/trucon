@@ -1,0 +1,121 @@
+/* auth.css atualizado */
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Corpo com fundo verde de mesa de cassino */
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('../img/background-auth.webp'); /* Caminho corrigido */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinha o container ao topo */
+    height: 100vh;
+    margin: 0;
+    padding: 20px; /* Evita que o container encoste nas bordas */
+}
+
+/* Container com aparência de mesa de jogo */
+.container {
+    background-color: rgba(46, 74, 55, 0.9); /* Fundo translúcido */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 500px; /* Tamanho máximo para telas maiores */
+    text-align: center;
+    border: 2px solid #d4af37; /* Borda dourada */
+    margin-top: 20px; /* Espaçamento no topo */
+}
+
+/* Título maior e destacado */
+h2 {
+    margin-bottom: 20px;
+    color: #d4af37; /* Cor dourada */
+    font-size: 36px; /* Aumentado o tamanho da fonte */
+    font-weight: bold; /* Mantém o título em negrito */
+    text-transform: uppercase; /* Coloca o texto em letras maiúsculas (opcional) */
+}
+
+/* Labels */
+label {
+    color: #d4af37; /* Cor dourada para as labels */
+    font-weight: bold; /* Deixa as labels mais destacadas */
+    margin-bottom: 5px; /* Espaçamento entre label e campo */
+    display: block; /* Garante que as labels fiquem acima dos inputs */
+}
+
+/* Mensagens de ajuda e textos gerados pelo Django */
+.help-text,
+.text-muted,
+.small,
+.helptext,
+ul.errorlist li,
+ul,
+.form-text {
+    color: #d4af37 !important; /* Cor dourada para todas as mensagens de ajuda e erros */
+    font-size: 14px; /* Tamanho da fonte menor para o texto de ajuda */
+    margin-bottom: 10px; /* Espaçamento abaixo do texto de ajuda */
+    text-align: left; /* Alinha o texto de ajuda à esquerda */
+}
+
+/* Formulário */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="text"],
+input[type="password"] {
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid #888;
+    font-size: 16px;
+    color: #d4af37; /* Texto dourado */
+    background-color: #2e4a37; /* Fundo verde escuro */
+    width: 100%; /* Garante que os campos ocupem a mesma largura */
+    box-sizing: border-box; /* Inclui padding e border no cálculo da largura */
+}
+
+button {
+    background-color: #d4af37; /* Cor dourada */
+    color: #2e4a37; /* Texto verde escuro */
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 12px; /* Aumentado para toque confortável */
+}
+
+button:hover {
+    background-color: #b8860b; /* Cor dourada mais intensa */
+}
+
+a {
+    color: #d4af37; /* Link dourado */
+    text-decoration: none;
+    font-size: 14px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Estilos Responsivos */
+@media (max-width: 768px) {
+    .container {
+        max-width: 90%; /* O container ocupa 90% da largura da tela em dispositivos móveis */
+        padding: 20px; /* Ajustado para telas pequenas */
+    }
+
+    button {
+        padding: 10px; /* Ajustado para toque confortável em dispositivos móveis */
+    }
+}
