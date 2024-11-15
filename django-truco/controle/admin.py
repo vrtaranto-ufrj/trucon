@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from controle.models import Jogador
+from controle.models import Sala
+
+admin.site.register(Jogador)
+admin.site.register(Sala)

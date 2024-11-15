@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salas</title>
+</head>
+<body>
+    <h1>Salas Disponíveis</h1>
+    <ul>
+        {% for sala in salas %}
+            <a href="{% url 'controle:sala' sala.id %}">{{ sala }}</a>
+        {% endfor %}
+    </ul>
+
+    <!-- Botão para criar uma nova sala -->
+    <a href="{% url 'controle:criar_sala' %}">
+        <button>Criar Nova Sala</button>
+    </a>
+    {% for sala in salas %}
+        {% if request.user.jogador == sala.dono %}
+        <form method="POST" action="{% url 'controle:deletar_sala' sala.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Deletar sua Sala</button>
+        </form>
+        {% endif %}
+    {% endfor %}
+</body>
+</html>

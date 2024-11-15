@@ -4,17 +4,17 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
+    <title>Login</title>
     <link rel="stylesheet" href="{% static '/controle/css/auth.css' %}">
 </head>
 <body>
     <div class="container">
-        <h2>Cadastro</h2>
+        <h2>Login</h2>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Cadastrar</button>
-            <a href="{% url 'login' %}">Já possui uma conta? Faça login</a>
+            <button type="submit">Entrar</button>
+            <a href="{% url 'cadastrar' %}">Não possui Login? Cadastre-se</a>
         </form>
     </div>
 </body>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Sala</title>
+    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
+</head>
+<body>
+    <div class="container">
+        <h1>Detalhes da Sala</h1>
+        <div class="sala-detalhes">
+            <p><strong>Nome da Sala:</strong> {{ sala.nome }}</p>
+            <p><strong>Senha:</strong> {{ sala.senha }}</p>
+            <p><strong>Dono:</strong> {{ sala.dono }}</p>
+            <p><strong>Data de Criação:</strong> {{ sala.criacao }}</p>
+
+            {% if request.user.jogador == sala.dono %}
+                <form method="POST" action="{% url 'controle:deletar_sala' sala.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Deletar Sala</button>
+                </form>
+            {% else %}
+                <!-- Botão que usa JavaScript para enviar um PATCH request -->
+                <button onclick="sairDaSala({{ sala.id }})" class="btn btn-danger">Sair da Sala</button>
+            {% endif %}
+
+            {% for jogador in sala.jogador_set.all %}
+                <p><strong>Jogador:</strong> {{ jogador }}</p>
+            {% endfor %}
+        </div>
+        <a href="{% url 'controle:salas' %}">Voltar para a lista de salas</a>
+    </div>
+
+    <!-- Script JavaScript para enviar uma requisição PATCH -->
+    <script>
+        function sairDaSala(salaId) {
+            fetch(`/salas/${salaId}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'  // Passar o CSRF token
+                },
+                body: JSON.stringify({ action: 'sair' })  // Corpo da requisição
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = "/salas";  // Redireciona se for bem-sucedido
+                } else {
+                    alert('Erro ao sair da sala');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao sair da sala');
+            });
+        }
+    </script>
+</body>
+</html>

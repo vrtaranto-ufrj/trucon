@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deletar Sala</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h1>Deletar Sala</h1>
+    <p>Tem certeza de que deseja deletar a sala "{{ sala }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Deletar</button>
+        <a href="{% url 'salas' %}">Cancelar</a>
+    </form>
+</body>
+</html>

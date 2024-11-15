@@ -52,12 +52,16 @@ label {
     display: block; /* Garante que as labels fiquem acima dos inputs */
 }
 
+ul.errorlist li {
+    color: #ff1717; /* Cor vermelha menos intensa para mensagens de erro */
+    font-weight: bold;
+}
+
 /* Mensagens de ajuda e textos gerados pelo Django */
 .help-text,
 .text-muted,
 .small,
 .helptext,
-ul.errorlist li,
 ul,
 .form-text {
     color: #d4af37 !important; /* Cor dourada para todas as mensagens de ajuda e erros */

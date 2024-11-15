@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Sala</title>
+</head>
+<body>
+    <h1>Criar Sala</h1>
+    <form action="{% url 'controle:criar_sala' %}" method="post">
+        {% csrf_token %}
+        <label for="senha">Senha (máximo 31 caracteres):</label>
+        <input type="senha" id="senha" name="senha" maxlength="31" required>
+        <button type="submit">Criar Sala</button>
+    </form>
+</body>
+</html>

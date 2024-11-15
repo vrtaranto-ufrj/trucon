@@ -7,7 +7,7 @@ class Jogador(models.Model):
     """
     Modelo do jogador
     """
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='jogador')
     vitorias = models.IntegerField(default=0)
     derrotas = models.IntegerField(default=0)
     sala = models.ForeignKey(Sala, on_delete=models.SET_NULL, null=True, blank=True)
