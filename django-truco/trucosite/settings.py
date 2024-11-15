@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,6 +34,7 @@ ALLOWED_HOSTS = ['*'] if not DEBUG else []
 
 INSTALLED_APPS = [
     'controle.apps.ControleConfig',
+    'api.apps.ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -130,3 +132,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/salas/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Tempo de vida do token de acesso
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # Tempo de vida do token de atualização
+    'ROTATE_REFRESH_TOKENS': True,  # Gera um novo refresh token ao usar o atual
+    'BLACKLIST_AFTER_ROTATION': True,  # Coloca na lista negra o refresh token usado
+}

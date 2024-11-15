@@ -20,11 +20,13 @@ from django.contrib.auth.views import LoginView
 
 
 from controle import views as controle_views
+from api import views as api_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('cadastrar/', controle_views.CadastroView.as_view(), name='cadastrar'),  # Caminho para o cadastro
     path('login/', LoginView.as_view(), name='login'),  # Caminho para o login
     path('', controle_views.HomeRedirectView.as_view(), name='home'),  # Caminho para redirecionar com base no login
+    path('api/', include('api.urls')),  # Inclua as URLs do app api
     path('', include('controle.urls')),  # Inclua as URLs do app controle
 ]

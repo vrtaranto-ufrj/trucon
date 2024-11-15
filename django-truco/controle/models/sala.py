@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Sala(models.Model):
     """
     Modelo de uma sala de espera.
