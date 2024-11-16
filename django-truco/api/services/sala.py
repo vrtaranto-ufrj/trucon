@@ -26,6 +26,7 @@ class SalaService:
         if sala.dono != jogador:
             raise PermissionError()
         
+        jogador.sala = None        
         sala.delete()
 
     @staticmethod
@@ -35,7 +36,7 @@ class SalaService:
         if jogador in sala.jogador_set.all():
             raise JogadorJaNaSalaException()
         
-        if jogador.sala.id is not None:
+        if jogador.sala is not None:
             raise JogadorJaEmOutraSalaException()
 
         sala.jogador_set.add(jogador)
@@ -43,7 +44,7 @@ class SalaService:
     
     @staticmethod
     def sair_sala(sala: Sala, jogador: Jogador) -> Sala:
-        if sala.dono != jogador:
+        if sala.dono == jogador:
             raise PermissionError()
         
         sala.jogador_set.remove(jogador)

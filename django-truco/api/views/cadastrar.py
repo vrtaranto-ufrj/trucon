@@ -5,6 +5,8 @@ from rest_framework import status
 # from rest_framework.permissions import IsAuthenticated
 from api.serializers import CadastrarSerializer
 
+from controle.models import Jogador
+
 class CadastrarApiView(APIView):
     """
     API View para registrar um novo usuário.
@@ -16,11 +18,9 @@ class CadastrarApiView(APIView):
         register_serializer = CadastrarSerializer(data=request.data)
         
         if register_serializer.is_valid():
-            register_serializer.save()  # Cria o usuário
-            return Response(
-                {"message": "Usuário registrado com sucesso!"},
-                status=status.HTTP_201_CREATED
-            )
+            usuario = register_serializer.save()  # Cria o usuário
+            Jogador.objects.create(usuario=usuario)
+            return Response(status=status.HTTP_201_CREATED)
         
         # Se os dados não forem válidos, retorna os erros de validação
         return Response(

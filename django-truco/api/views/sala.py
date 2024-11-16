@@ -22,7 +22,13 @@ class SalaApiView(APIView):
 
     def get(self, request: Request, sala_id: Optional[int] = None) -> Response:
         if sala_id:
-            return self.__get_sala(sala_id)
+            if not request.user.is_authenticated:
+                return Response(
+                    {"error": "Usuário não autenticado"},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+            jogador = request.user.jogador
+            return self.__get_sala(sala_id, jogador)
         else:
             return self.__get_salas()
         
@@ -37,10 +43,14 @@ class SalaApiView(APIView):
         senha_request = request.data.get('senha')
 
         if request.path.endswith('/entrar/') and sala_id:
-            
             return self.__entrar_sala(sala_id, senha_request, jogador)
-        else:
+        elif sala_id is None:
             return self.__criar_sala(senha_request, jogador)
+        else:
+            return Response(
+                {"error": "Rota inválida"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     def delete(self, request: Request, sala_id: int) -> Response:
         if not request.user.is_authenticated:
@@ -53,14 +63,36 @@ class SalaApiView(APIView):
 
         return self.__deletar_sala(sala_id, jogador)
 
+    def put(self, request: Request, sala_id: int) -> Response:
+        if not request.user.is_authenticated:
+            return Response(
+                {"error": "Usuário não autenticado"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         
-    def __get_sala(self, sala_id: int) -> Response:
+        jogador = request.user.jogador
+
+        return self.__sair_sala(sala_id, jogador)
+
+
+    def __get_sala(self, sala_id: int, jogador: Jogador) -> Response:
             try:
                 sala = SalaService.get_sala(sala_id)
             except Sala.DoesNotExist:
                 return Response(
                     {"error": "Sala não encontrada"},
                     status=status.HTTP_404_NOT_FOUND
+                )
+            
+            if not SalaService.jogador_esta_na_sala(sala, jogador):
+                if jogador.sala.id is not None:
+                    return Response(
+                        {"error": "Jogador já está em outra sala"},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+                return Response(
+                    {"error": "Jogador não está na sala"},
+                    status=status.HTTP_400_BAD_REQUEST
                 )
             
             sala_serializer = SalaSerializer(sala)
@@ -132,3 +164,28 @@ class SalaApiView(APIView):
             )
         
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def __sair_sala(self, sala_id: int, jogador: Jogador) -> Response:
+        try:
+            sala = SalaService.get_sala(sala_id)
+        except Sala.DoesNotExist:
+            return Response(
+                {"error": "Sala não encontrada"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        if not SalaService.jogador_esta_na_sala(sala, jogador):
+            return Response(
+                {"error": "Jogador não está na sala"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            SalaService.sair_sala(sala, jogador)
+        except PermissionError:
+            return Response(
+                {"error": "Você não tem permissão para sair desta sala"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        

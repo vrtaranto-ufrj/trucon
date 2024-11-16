@@ -8,6 +8,7 @@ class SalaSerializer(serializers.ModelSerializer):
     """
 
     dono = serializers.StringRelatedField()
+    jogador_set = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Sala
@@ -19,7 +20,8 @@ class SalasSerializer(serializers.ModelSerializer):
     """
 
     dono = serializers.StringRelatedField()
+    jogador_set = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Sala
-        fields = ['id', 'dono']
+        fields = ['id', 'dono', 'jogador_set']

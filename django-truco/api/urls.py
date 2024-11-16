@@ -1,4 +1,4 @@
-from api.views import CadastrarApiView, SalaApiView
+from api.views import CadastrarApiView, SalaApiView, JogadorApiView
 from django.urls import path
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
@@ -13,4 +13,5 @@ urlpatterns = [
     path('salas/<int:sala_id>/', SalaApiView.as_view(), name='sala'),
     path('salas/criar/', SalaApiView.as_view(), name='criar_sala'),
     path('salas/<int:sala_id>/entrar/', SalaApiView.as_view(), name='entrar_sala'),
+    path('jogadores/', JogadorApiView.as_view(), name='jogadores'),
 ]
