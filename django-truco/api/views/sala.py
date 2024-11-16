@@ -85,7 +85,7 @@ class SalaApiView(APIView):
                 )
             
             if not SalaService.jogador_esta_na_sala(sala, jogador):
-                if jogador.sala.id is not None:
+                if jogador.sala is not None:
                     return Response(
                         {"error": "Jogador já está em outra sala"},
                         status=status.HTTP_403_FORBIDDEN
