@@ -1,27 +1,26 @@
+import asyncio
 from typing import Optional
 
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
-
+from api.consumers import SalaConsumer
+from api.exceptions import SalaException
 from api.serializers import SalaSerializer, SalasSerializer
-from api.services import SalaService
-from controle.models import Sala
+from api.services import PartidaService, SalaService
+from asgiref.sync import async_to_sync, sync_to_async
+from channels.layers import get_channel_layer
+from controle.models import Jogador, Sala
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from controle.models import Jogador
-from api.exceptions import SalaException
-from api.consumers import SalaConsumer
 
 class SalaApiView(APIView):
     """
     API View para devolver a lista das salas.
     """
 
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request: Request, sala_id: Optional[int] = None) -> Response:
         if sala_id:
@@ -47,6 +46,8 @@ class SalaApiView(APIView):
 
         if request.path.endswith('/entrar/') and sala_id:
             return self.__entrar_sala(sala_id, senha_request, jogador)
+        elif request.path.endswith('/criarPartida/') and sala_id:
+            return self.__criar_partida(sala_id, jogador)
         elif sala_id is None:
             return self.__criar_sala(senha_request, jogador)
         else:
@@ -77,6 +78,17 @@ class SalaApiView(APIView):
 
         return self.__sair_sala(sala_id, jogador)
 
+    def patch(self, request):
+        sala = Sala.objects.get(id=87)
+        
+        # async def main():
+        partida = PartidaService()
+        partida.iniciar_partida(sala, 1)
+
+        # # Run the async function in a new event loop
+        # asyncio.run(main())
+
+        return Response(status=status.HTTP_201_CREATED)
 
     def __get_sala(self, sala_id: int, jogador: Jogador) -> Response:
             try:
@@ -219,3 +231,38 @@ class SalaApiView(APIView):
         
         return Response(status=status.HTTP_204_NO_CONTENT)
         
+    def __criar_partida(self, sala_id: int, jogador: Jogador) -> Response:
+        try:
+            sala = SalaService.get_sala(sala_id)
+        except Sala.DoesNotExist:
+            return Response(
+                {"error": "Sala não encontrada"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        try:
+            partida_id = PartidaService.criar_partida(sala, jogador)
+        except PermissionError:
+            return Response(
+                {"error": "Apenas o dono pode iniciar a partida"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f'sala_{sala.id}',
+            {
+                'type': 'sala_message',
+                'message': 'start',
+                'partida_id': partida_id,
+            }
+        )
+
+        async def run_in_background():
+            partida = PartidaService()
+            await partida.iniciar_partida(sala, partida_id)
+
+        loop = asyncio.get_running_loop()
+        loop.create_task(run_in_background())
+
+        return Response(status=status.HTTP_201_CREATED)
