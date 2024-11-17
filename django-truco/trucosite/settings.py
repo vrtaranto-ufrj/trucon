@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*'] if not DEBUG else []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'controle.apps.ControleConfig',
     'api.apps.ApiConfig',
     'django.contrib.admin',
@@ -76,6 +77,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'trucosite.wsgi.application'
+
+ASGI_APPLICATION = 'trucosite.asgi.application'
+
+# Add this configuration
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 
 # Database

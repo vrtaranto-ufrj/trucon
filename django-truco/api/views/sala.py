@@ -1,5 +1,8 @@
 from typing import Optional
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+
 from api.serializers import SalaSerializer, SalasSerializer
 from api.services import SalaService
 from controle.models import Sala
@@ -11,7 +14,7 @@ from rest_framework.views import APIView
 
 from controle.models import Jogador
 from api.exceptions import SalaException
-
+from api.consumers import SalaConsumer
 
 class SalaApiView(APIView):
     """
@@ -127,6 +130,14 @@ class SalaApiView(APIView):
         
         try:
             SalaService.entrar_sala(sala, jogador)
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f'sala_{sala.id}',
+                {
+                    'type': 'sala_message',
+                    'message': 'update'
+                }
+            )
         except SalaException as e:
             return Response(
                 {"error": str(e.message)},
@@ -144,16 +155,27 @@ class SalaApiView(APIView):
 
         sala = SalaService.criar_sala(jogador, senha_request)
         sala_serializer = SalaSerializer(sala)
+        
+
         return Response(sala_serializer.data, status=status.HTTP_201_CREATED)
 
     def __deletar_sala(self, sala_id: int, jogador: Jogador) -> Response:
         try:
             sala = SalaService.get_sala(sala_id)
-        except Sala.DoesNotExist:
+        except Sala.DoesNotExist:   
             return Response(
                 {"error": "Sala não encontrada"},
                 status=status.HTTP_404_NOT_FOUND
             )
+        
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f'sala_{sala.id}',
+            {
+                'type': 'sala_message',
+                'message': 'delete'
+            }
+        )
         
         try:
             SalaService.deletar_sala(sala, jogador)
@@ -181,6 +203,14 @@ class SalaApiView(APIView):
             )
         try:
             SalaService.sair_sala(sala, jogador)
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f'sala_{sala.id}',
+                {
+                    'type': 'sala_message',
+                    'message': 'update'
+                }
+            )
         except PermissionError:
             return Response(
                 {"error": "Você não tem permissão para sair desta sala"},
